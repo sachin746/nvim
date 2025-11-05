@@ -5,14 +5,13 @@ return {
 	lazy = false, 
 	build = ":TSUpdate",
 	config = function() 
-		require("nvim.treesitter.configs").setup({
+		require("nvim-treesitter.configs").setup({
 			-- languages to install (others can be added later)
         		ensure_installed = {
           			"lua",
 				"bash",
 				"go",
 				"json",
-				"yml",
 				"python",
 			},
 			-- automatically install missing parsers
