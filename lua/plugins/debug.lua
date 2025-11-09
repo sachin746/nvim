@@ -1,12 +1,72 @@
 return {
 	{
 		"mfussenegger/nvim-dap",
+		lazy = true,
 		dependencies = {
 			"leoluz/nvim-dap-go",
 			"rcarriga/nvim-dap-ui",
 			"theHamsta/nvim-dap-virtual-text",
 			"nvim-neotest/nvim-nio",
 			"williamboman/mason.nvim",
+		},
+		keys = {
+			{
+				"<F1>",
+				function()
+					require("dap").continue()
+				end,
+				desc = "Start/Continue debugging",
+			},
+			{
+				"<F2>",
+				function()
+					require("dap").step_over()
+				end,
+				desc = "Step over",
+			},
+			{
+				"<F3>",
+				function()
+					require("dap").step_into()
+				end,
+				desc = "Step into",
+			},
+			{
+				"<F4>",
+				function()
+					require("dap").step_out()
+				end,
+				desc = "Step out",
+			},
+			{
+				"<F5>",
+				function()
+					require("dap").toggle_breakpoint()
+				end,
+				desc = "Toggle breakpoint",
+			},
+			{
+				"<F6>",
+				function()
+					require("dapui").eval(nil, { enter = true })
+				end,
+				desc = "Evaluate expression",
+				mode = { "n", "v" },
+			},
+			{
+				"<F7>",
+				function()
+					require("dap").repl.open()
+				end,
+				desc = "Open REPL (logs)",
+			},
+			{
+				"<F8>",
+				function()
+					require("dap").restart()
+				end,
+				desc = "Restart debug session",
+			},
 		},
 		config = function()
 			local dap = require("dap")
@@ -62,23 +122,10 @@ return {
 				}
 			end
 
-			vim.keymap.set("n", "<space>db", dap.toggle_breakpoint)
-			vim.keymap.set("n", "<space>dc", dap.run_to_cursor)
-
 			-- Eval var under cursor
 			vim.keymap.set("n", "<space>dv", function()
 				require("dapui").eval(nil, { enter = true })
 			end)
-
-			vim.keymap.set("n", "<F1>", dap.continue)
-			vim.keymap.set("n", "<F2>", dap.step_over)
-			vim.keymap.set("n", "<F3>", dap.step_into)
-			vim.keymap.set("n", "<F4>", dap.step_out)
-			vim.keymap.set("n", "<F5>", dap.step_back)
-			vim.keymap.set("n", "<F8>", dap.restart)
-			vim.keymap.set("n", "<leader>dl", function()
-				dap.repl.open()
-			end, { desc = "Toggle DAP REPL" })
 
 			dap.listeners.before.attach.dapui_config = function()
 				ui.open()
