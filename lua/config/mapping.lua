@@ -16,3 +16,17 @@ vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm direction=horizontal<CR>")
 vim.keymap.set("n", "<leader>bd", ":bdelete<CR>", { desc = "Close current buffer" })
 vim.keymap.set("n", "<S-h>", "<cmd>bp<CR>", { desc = "Next tab" })
 vim.keymap.set("n", "<S-l>", "<cmd>bn<CR>", { desc = "Prev tab" })
+
+-- env set
+local env_base = vim.fn.expand("~/env/goProject")
+vim.keymap.set("n", "<leader>eq", function()
+	vim.cmd("Dotenv " .. env_base .. "/.env.qa")
+	vim.g.current_env = "qa"
+	print("Loaded .env.qa ⚙️")
+end, { desc = "Load QA Environment" })
+
+vim.keymap.set("n", "<leader>ep", function()
+	vim.cmd("Dotenv " .. env_base .. "/.env.prod")
+	vim.g.current_env = "prod"
+	print("Loaded .env.prod 🚀")
+end, { desc = "Load Prod Environment" })
