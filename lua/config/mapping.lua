@@ -22,11 +22,11 @@ local env_base = vim.fn.expand("~/env/goProject")
 vim.keymap.set("n", "<leader>eq", function()
 	vim.cmd("Dotenv " .. env_base .. "/.env.qa")
 	vim.g.current_env = "qa"
-	print("Loaded .env.qa ⚙️")
+	vim.notify("Loaded .env.qa ⚙️")
 end, { desc = "Load QA Environment" })
 
 vim.keymap.set("n", "<leader>ep", function()
 	vim.cmd("Dotenv " .. env_base .. "/.env.prod")
 	vim.g.current_env = "prod"
-	print("Loaded .env.prod 🚀")
+	vim.notify("Loaded .env.prod 🚀")
 end, { desc = "Load Prod Environment" })
