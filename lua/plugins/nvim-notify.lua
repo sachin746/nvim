@@ -8,6 +8,7 @@ return {
 			timeout = 3000, -- 3 seconds per notification
 			render = "default",
 			top_down = false, -- show newest at bottom
+			background_colour = "#000000",
 			max_width = math.floor(vim.o.columns * 0.5), -- half screen width
 
 			on_open = function(win)
