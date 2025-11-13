@@ -57,6 +57,7 @@ return {
 				"<F7>",
 				function()
 					require("dap").repl.open()
+					require("dap").repl.open({ wrap = true })
 				end,
 				desc = "Open REPL (logs)",
 			},
