@@ -12,10 +12,11 @@ vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm direction=horizontal<CR>")
 
 -- Tab navigation
 
--- buffer line
+-- buffer
 vim.keymap.set("n", "<leader>bd", ":bdelete<CR>", { desc = "Close current buffer" })
 vim.keymap.set("n", "<S-h>", "<cmd>bp<CR>", { desc = "Next tab" })
 vim.keymap.set("n", "<S-l>", "<cmd>bn<CR>", { desc = "Prev tab" })
+vim.keymap.set("n", "<leader>W", "<cmd>set wrap!<CR>", { desc = "toggle wrap" })
 
 -- env set
 local env_base = vim.fn.expand("~/env/goProject")
@@ -30,3 +31,9 @@ vim.keymap.set("n", "<leader>ep", function()
 	vim.g.current_env = "prod"
 	vim.notify("Loaded .env.prod 🚀")
 end, { desc = "Load Prod Environment" })
+
+-- kulala http client
+vim.keymap.set("n", "<leader>kk", "<cmd>Kulala run<cr>", { desc = "Send HTTP request" })
+vim.keymap.set("n", "<leader>kl", "<cmd>Kulala last<cr>", { desc = "Repeat last request" })
+vim.keymap.set("n", "<leader>kf", "<cmd>Kulala fmt<cr>", { desc = "Format HTTP buffer" })
+vim.keymap.set("n", "<leader>kc", "<cmd>Kulala curl<cr>", { desc = "Convert to curl command" })

@@ -11,6 +11,10 @@ return {
 			javascript = { "prettierd", "prettier", stop_after_first = true },
 			-- go format with gofumpt
 			go = { "gofumpt", "goimports" },
+			--json format with prettier
+			json = { "jq", "prettierd", "prettier", stop_after_first = true },
+			-- http format with kulala
+			http = { "kulala-fmt" },
 		},
 		format_on_save = {
 			-- These options will be passed to conform.format()

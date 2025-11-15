@@ -46,9 +46,9 @@ return {
 				-- Actions
 				vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 				vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-				vim.keymap.set("n", "<leader>f", function()
+				vim.keymap.set("n", "<leader>fo", function()
 					vim.lsp.buf.format({ async = true })
-				end, opts)
+				end, { buffer = bufnr, silent = true, desc = "Format current buffer" })
 
 				-- Diagnostics it means error or warning in code
 				vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
