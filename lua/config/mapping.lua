@@ -37,3 +37,8 @@ vim.keymap.set("n", "<leader>kk", "<cmd>Kulala run<cr>", { desc = "Send HTTP req
 vim.keymap.set("n", "<leader>kl", "<cmd>Kulala last<cr>", { desc = "Repeat last request" })
 vim.keymap.set("n", "<leader>kf", "<cmd>Kulala fmt<cr>", { desc = "Format HTTP buffer" })
 vim.keymap.set("n", "<leader>kc", "<cmd>Kulala curl<cr>", { desc = "Convert to curl command" })
+
+---- c++ configs
+local test = require("custom.test")
+vim.keymap.set("n", '<leader>"', test.Closetxt, { desc = "Open input/output files" })
+vim.keymap.set("n", "<C-'>", test.runCPP, { desc = "Running cpp" })
