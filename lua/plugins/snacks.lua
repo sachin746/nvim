@@ -1,4 +1,6 @@
 return {
 	"folke/snacks.nvim",
-	opts = {},
+	opts = {
+		indent = {},
+	},
 }
