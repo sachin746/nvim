@@ -66,6 +66,9 @@ opt.backspace = { "indent", "eol", "start" } -- backspace over anything
 -- ---------- LSP/Diagnostics ----------
 opt.updatetime = 300 -- reduce delay before showing diagnostics
 opt.signcolumn = "yes" -- prevent text shifting when LSP diagnostics appear
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldenable = false
 
 vim.fn.sign_define("DapBreakpoint", { text = "🟥", texthl = "", linehl = "", numhl = "" })
 vim.fn.sign_define("DapBreakpointCondition", { text = "🟨", texthl = "", linehl = "", numhl = "" })
