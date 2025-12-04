@@ -23,6 +23,7 @@ return {
 				"html",
 				"cssls",
 				"jsonls",
+				"clangd",
 			},
 		},
 		dependencies = {
@@ -32,6 +33,7 @@ return {
 
 	{
 		"neovim/nvim-lspconfig",
+		dependencies = { "ibhagwan/fzf-lua" },
 		config = function()
 			-- Load fzf-lua
 			local fzf = require("fzf-lua")
@@ -117,6 +119,11 @@ return {
 				},
 				jsonls = {
 					cmd = { "vscode-json-language-server", "--stdio" },
+					on_attach = on_attach,
+					capabilities = capabilities,
+				},
+				clangd = {
+					cmd = { "clangd" },
 					on_attach = on_attach,
 					capabilities = capabilities,
 				},
