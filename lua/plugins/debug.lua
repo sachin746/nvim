@@ -126,7 +126,7 @@ return {
 			-- Eval var under cursor
 			vim.keymap.set("n", "<space>dv", function()
 				require("dapui").eval(nil, { enter = true })
-			end)
+			end, { desc = "Debug: eval under cursor" })
 
 			dap.listeners.before.attach.dapui_config = function()
 				ui.open()

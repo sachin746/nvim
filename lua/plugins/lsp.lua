@@ -35,105 +35,102 @@ return {
 		"neovim/nvim-lspconfig",
 		dependencies = { "ibhagwan/fzf-lua" },
 		config = function()
-			-- Load fzf-lua
 			local fzf = require("fzf-lua")
 
 			local function on_attach(_, bufnr)
-				local opts = { buffer = bufnr, silent = true }
+				local function map(lhs, rhs, desc)
+					vim.keymap.set("n", lhs, rhs, { buffer = bufnr, silent = true, desc = desc })
+				end
 
-				-- LSP Navigation (replaces Telescope)
-				vim.keymap.set("n", "gd", fzf.lsp_definitions, opts)
-				vim.keymap.set("n", "gr", fzf.lsp_references, opts)
-				vim.keymap.set("n", "gi", fzf.lsp_implementations, opts)
-				vim.keymap.set("n", "gt", fzf.lsp_typedefs, opts)
+				map("gd", fzf.lsp_definitions, "LSP: definition")
+				map("gr", fzf.lsp_references, "LSP: references")
+				map("gi", fzf.lsp_implementations, "LSP: implementations")
+				map("gt", fzf.lsp_typedefs, "LSP: type definition")
 
-				-- Declaration + Hover
-				vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-				vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+				map("gD", vim.lsp.buf.declaration, "LSP: declaration")
+				map("K", vim.lsp.buf.hover, "LSP: hover")
 
-				-- Code actions & rename
-				vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-				vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+				map("<leader>ca", vim.lsp.buf.code_action, "LSP: code action")
+				map("<leader>rn", vim.lsp.buf.rename, "LSP: rename")
 
-				-- Formatting
-				vim.keymap.set("n", "<leader>fo", function()
+				map("<leader>fo", function()
 					vim.lsp.buf.format({ async = true })
-				end, { buffer = bufnr, silent = true, desc = "Format current buffer" })
+				end, "Format current buffer")
 
-				-- Diagnostics (Telescope → fzf-lua)
-				vim.keymap.set("n", "<leader>xx", fzf.diagnostics_workspace, opts)
-				vim.keymap.set("n", "<leader>xd", fzf.diagnostics_document, opts)
+				map("<leader>xx", fzf.diagnostics_workspace, "Diagnostics: workspace")
+				map("<leader>xd", fzf.diagnostics_document, "Diagnostics: document")
 
-				-- Navigate diagnostics
-				vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-				vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-				vim.keymap.set("n", "<leader>xq", vim.diagnostic.setloclist, opts)
+				map("[d", vim.diagnostic.goto_prev, "Diagnostic: previous")
+				map("]d", vim.diagnostic.goto_next, "Diagnostic: next")
+				map("<leader>xq", vim.diagnostic.setloclist, "Diagnostics: loclist")
 
-				-- Symbols (Telescope → fzf-lua)
-				vim.keymap.set("n", "<leader>ds", fzf.lsp_document_symbols, opts)
-				vim.keymap.set("n", "<leader>ws", fzf.lsp_workspace_symbols, opts)
+				map("<leader>ds", fzf.lsp_document_symbols, "LSP: document symbols")
+				map("<leader>ws", fzf.lsp_workspace_symbols, "LSP: workspace symbols")
 
-				-- Workspace folders (same as before)
-				vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts)
-				vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts)
-				vim.keymap.set("n", "<leader>lw", function()
+				map("<leader>wa", vim.lsp.buf.add_workspace_folder, "LSP: add workspace folder")
+				map("<leader>wr", vim.lsp.buf.remove_workspace_folder, "LSP: remove workspace folder")
+				map("<leader>lw", function()
 					print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-				end, opts)
+				end, "LSP: list workspace folders")
 			end
 
-			-- capabilities for autocompletion
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
+			local root_markers = { ".git", "go.mod", "package.json", "pyproject.toml" }
 
-			-- All LSP servers config
 			local servers = {
 				lua_ls = {
+					filetypes = { "lua" },
 					cmd = { "lua-language-server" },
 					settings = {
 						Lua = {
 							diagnostics = { globals = { "vim" } },
 						},
 					},
-					on_attach = on_attach,
-					capabilities = capabilities,
 				},
-				gopls = { cmd = { "gopls" }, on_attach = on_attach, capabilities = capabilities },
+				gopls = {
+					filetypes = { "go", "gomod", "gowork", "gotmpl" },
+					cmd = { "gopls" },
+				},
 				pyright = {
+					filetypes = { "python" },
 					cmd = { "pyright-langserver", "--stdio" },
-					on_attach = on_attach,
-					capabilities = capabilities,
 				},
 				ts_ls = {
+					filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
 					cmd = { "typescript-language-server", "--stdio" },
-					on_attach = on_attach,
-					capabilities = capabilities,
 				},
 				html = {
+					filetypes = { "html" },
 					cmd = { "vscode-html-language-server", "--stdio" },
-					on_attach = on_attach,
-					capabilities = capabilities,
 				},
 				cssls = {
+					filetypes = { "css", "scss", "less" },
 					cmd = { "vscode-css-language-server", "--stdio" },
-					on_attach = on_attach,
-					capabilities = capabilities,
 				},
 				jsonls = {
+					filetypes = { "json", "jsonc" },
 					cmd = { "vscode-json-language-server", "--stdio" },
-					on_attach = on_attach,
-					capabilities = capabilities,
 				},
 				clangd = {
+					filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
 					cmd = { "clangd" },
-					on_attach = on_attach,
-					capabilities = capabilities,
 				},
 			}
 
-			-- start all servers
 			for name, config in pairs(servers) do
-				config.name = name
-				config.root_dir = vim.fs.root(0, { ".git", "go.mod", "package.json", "pyproject.toml" })
-				vim.lsp.start(config)
+				vim.api.nvim_create_autocmd("FileType", {
+					pattern = config.filetypes,
+					callback = function(ev)
+						vim.lsp.start({
+							name = name,
+							cmd = config.cmd,
+							settings = config.settings,
+							capabilities = capabilities,
+							on_attach = on_attach,
+							root_dir = vim.fs.root(ev.buf, root_markers),
+						})
+					end,
+				})
 			end
 		end,
 	},

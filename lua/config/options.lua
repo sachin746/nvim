@@ -44,13 +44,14 @@ opt.splitbelow = true -- new horizontal splits open below
 opt.splitright = true -- new vertical splits open to the right
 
 -- ---------- Performance ----------
-opt.updatetime = 250 -- faster completion response (default 4000ms)
+opt.updatetime = 300 -- faster diagnostics / completion response
 opt.timeoutlen = 500 -- faster key sequence timeout
 
 -- ---------- Appearance ----------
 opt.colorcolumn = "100" -- show vertical line at column 100
 opt.background = "dark" -- set background to dark
 opt.title = true -- show file name in terminal title
+opt.signcolumn = "yes" -- always show sign column (git/lsp icons)
 
 -- ---------- Files & Encoding ----------
 opt.encoding = "utf-8" -- default encoding
@@ -58,16 +59,13 @@ opt.fileencoding = "utf-8" -- file encoding
 opt.fileformats = { "unix", "dos", "mac" } -- prefer Unix line endings
 
 -- ---------- Others ----------
-opt.lazyredraw = true -- don’t redraw while executing macros
 opt.shortmess:append("c") -- don’t show completion messages
 opt.completeopt = { "menuone", "noselect" } -- better completion experience
 opt.backspace = { "indent", "eol", "start" } -- backspace over anything
 
--- ---------- LSP/Diagnostics ----------
-opt.updatetime = 300 -- reduce delay before showing diagnostics
-opt.signcolumn = "yes" -- prevent text shifting when LSP diagnostics appear
+-- ---------- Folding ----------
 vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldenable = false
 
 vim.fn.sign_define("DapBreakpoint", { text = "🟥", texthl = "", linehl = "", numhl = "" })

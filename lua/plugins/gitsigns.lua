@@ -26,7 +26,7 @@ return {
 				else
 					gitsigns.nav_hunk("next")
 				end
-			end)
+			end, { desc = "Git: next hunk" })
 
 			map("n", "[c", function()
 				if vim.wo.diff then
@@ -34,13 +34,13 @@ return {
 				else
 					gitsigns.nav_hunk("prev")
 				end
-			end)
+			end, { desc = "Git: previous hunk" })
 
 			map("n", "<leader>hb", function()
 				gitsigns.blame({ full = true })
-			end)
+			end, { desc = "Git: blame" })
 
-			map("n", "<leader>hd", gitsigns.diffthis)
+			map("n", "<leader>hd", gitsigns.diffthis, { desc = "Git: diff this" })
 		end,
 	},
 }
