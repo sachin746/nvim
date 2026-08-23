@@ -13,7 +13,7 @@ local colors = {
 }
 local env = {
 	function()
-		return vim.g.current_env
+		return vim.g.current_env or ""
 	end,
 	color = { fg = colors.blue, gui = "bold" }, -- Sets highlighting of component
 	padding = { left = 1, right = 1 }, -- We don't need space before this
@@ -23,7 +23,7 @@ return {
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 	event = "VeryLazy",
 	opts = {
-		theme = "gruvbox",
+		theme = "catppuccin",
 		sections = {
 			lualine_c = { "filename", env },
 		},

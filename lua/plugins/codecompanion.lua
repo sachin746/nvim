@@ -24,15 +24,49 @@ return {
 		-- Test with nvim-cmp
 		-- { "hrsh7th/nvim-cmp" },
 	},
+	config = function(_, opts)
+		local adapters = require("codecompanion.adapters")
+		local use_proxy = vim.env.ANTHROPIC_AUTH_TOKEN ~= nil and vim.env.ANTHROPIC_BASE_URL ~= nil
+
+		if use_proxy then
+			local base_url = vim.env.ANTHROPIC_BASE_URL:gsub("/$", "")
+			opts.adapters = {
+				http = {
+					anthropic_proxy = function()
+						return adapters.extend("anthropic", {
+							env = { api_key = "ANTHROPIC_AUTH_TOKEN" },
+							url = base_url .. "/v1/messages",
+							schema = {
+								model = {
+									default = "claude-sonnet-4-6",
+									choices = {
+										"claude-sonnet-4-6",
+										"claude-haiku-4-5",
+										"claude-opus-4-7",
+									},
+								},
+							},
+						})
+					end,
+				},
+			}
+			opts.strategies = {
+				chat = { adapter = "anthropic_proxy" },
+				inline = { adapter = "anthropic_proxy" },
+			}
+		else
+			-- personal: use copilot
+			opts.strategies = {
+				chat = { adapter = "copilot" },
+				inline = { adapter = "copilot" },
+			}
+		end
+
+		require("codecompanion").setup(opts)
+	end,
 	opts = {
-		--Refer to: https://github.com/olimorris/codecompanion.nvim/blob/main/lua/codecompanion/config.lua
-		strategies = {
-			--NOTE: Change the adapter as required
-			chat = { adapter = "copilot" },
-			inline = { adapter = "copilot" },
-		},
 		opts = {
-			log_level = "DEBUG",
+			log_level = "ERROR",
 		},
 	},
 }

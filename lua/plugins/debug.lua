@@ -6,8 +6,7 @@ return {
 			"leoluz/nvim-dap-go",
 			"theHamsta/nvim-dap-virtual-text",
 			"nvim-neotest/nvim-nio",
-			"williamboman/mason.nvim",
-			"igorlfs/nvim-dap-view",
+			"mason-org/mason.nvim",
 		},
 
 		keys = {
@@ -139,6 +138,24 @@ return {
 						debugAutoInterpretAllModules = false,
 					},
 				}
+			end
+
+			-- Eval var under cursor
+			vim.keymap.set("n", "<space>dv", function()
+				require("dapui").eval(nil, { enter = true })
+			end, { desc = "Debug: eval under cursor" })
+
+			dap.listeners.before.attach.dapui_config = function()
+				ui.open()
+			end
+			dap.listeners.before.launch.dapui_config = function()
+				ui.open()
+			end
+			dap.listeners.before.event_terminated.dapui_config = function()
+				ui.close()
+			end
+			dap.listeners.before.event_exited.dapui_config = function()
+				ui.close()
 			end
 		end,
 	},

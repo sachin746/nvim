@@ -44,7 +44,7 @@ opt.splitbelow = true -- new horizontal splits open below
 opt.splitright = true -- new vertical splits open to the right
 
 -- ---------- Performance ----------
-opt.updatetime = 250 -- faster completion response (default 4000ms)
+opt.updatetime = 300 -- faster diagnostics / completion response
 opt.timeoutlen = 500 -- faster key sequence timeout
 
 -- ---------- Appearance ----------
@@ -58,16 +58,13 @@ opt.fileencoding = "utf-8" -- file encoding
 opt.fileformats = { "unix", "dos", "mac" } -- prefer Unix line endings
 
 -- ---------- Others ----------
-opt.lazyredraw = true -- don’t redraw while executing macros
 opt.shortmess:append("c") -- don’t show completion messages
 opt.completeopt = { "menuone", "noselect" } -- better completion experience
 opt.backspace = { "indent", "eol", "start" } -- backspace over anything
 
--- ---------- LSP/Diagnostics ----------
-opt.updatetime = 300 -- reduce delay before showing diagnostics
-opt.signcolumn = "yes" -- prevent text shifting when LSP diagnostics appear
+-- ---------- Folding ----------
 vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldenable = false
 
 vim.fn.sign_define("DapBreakpoint", { text = "🟥", texthl = "", linehl = "", numhl = "" })
