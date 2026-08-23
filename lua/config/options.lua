@@ -51,7 +51,6 @@ opt.timeoutlen = 500 -- faster key sequence timeout
 opt.colorcolumn = "100" -- show vertical line at column 100
 opt.background = "dark" -- set background to dark
 opt.title = true -- show file name in terminal title
-opt.signcolumn = "yes" -- always show sign column (git/lsp icons)
 
 -- ---------- Files & Encoding ----------
 opt.encoding = "utf-8" -- default encoding

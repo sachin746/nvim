@@ -33,7 +33,7 @@ return {
 
 	{
 		"neovim/nvim-lspconfig",
-		dependencies = { "ibhagwan/fzf-lua" },
+		dependencies = { "ibhagwan/fzf-lua", "saghen/blink.cmp" },
 		config = function()
 			local fzf = require("fzf-lua")
 
@@ -74,7 +74,7 @@ return {
 				end, "LSP: list workspace folders")
 			end
 
-			local capabilities = require("cmp_nvim_lsp").default_capabilities()
+			local capabilities = require("blink.cmp").get_lsp_capabilities()
 			local root_markers = { ".git", "go.mod", "package.json", "pyproject.toml" }
 
 			local servers = {
