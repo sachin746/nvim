@@ -4,11 +4,11 @@ return {
 		lazy = true,
 		dependencies = {
 			"leoluz/nvim-dap-go",
-			"rcarriga/nvim-dap-ui",
 			"theHamsta/nvim-dap-virtual-text",
 			"nvim-neotest/nvim-nio",
 			"mason-org/mason.nvim",
 		},
+
 		keys = {
 			{
 				"<F1>",
@@ -45,21 +45,23 @@ return {
 				end,
 				desc = "Toggle breakpoint",
 			},
+
+			-- Eval (dap-view)
 			{
 				"<F6>",
 				function()
-					require("dapui").eval(nil, { enter = true })
+					require("dap-view").eval()
 				end,
 				desc = "Evaluate expression",
 				mode = { "n", "v" },
 			},
+
 			{
 				"<F7>",
 				function()
-					require("dap").repl.open()
 					require("dap").repl.open({ wrap = true })
 				end,
-				desc = "Open REPL (logs)",
+				desc = "Open REPL",
 			},
 			{
 				"<F8>",
@@ -68,19 +70,36 @@ return {
 				end,
 				desc = "Restart debug session",
 			},
+
+			-- Optional manual toggle for dap-view
+			{
+				"<leader>dv",
+				function()
+					require("dap-view").open()
+				end,
+				desc = "Open dap-view",
+			},
+			{
+				"<leader>dV",
+				function()
+					require("dap-view").close()
+				end,
+				desc = "Close dap-view",
+			},
 		},
+
 		config = function()
 			local dap = require("dap")
-			local ui = require("dapui")
+			local dapview = require("dap-view")
 
-			require("dapui").setup()
+			dapview.setup()
 			require("dap-go").setup()
 
 			require("nvim-dap-virtual-text").setup({
-				-- This just tries to mitigate the chance that I leak tokens here. Probably won't stop it from happening...
 				display_callback = function(variable)
 					local name = string.lower(variable.name)
 					local value = string.lower(variable.value)
+
 					if name:match("secret") or name:match("api") or value:match("secret") or value:match("api") then
 						return "*****"
 					end
@@ -93,23 +112,21 @@ return {
 				end,
 			})
 
-			-- Handled by nvim-dap-go
-			-- dap.adapters.go = {
-			--   type = "server",
-			--   port = "${port}",
-			--   executable = {
-			--     command = "dlv",
-			--     args = { "dap", "-l", "127.0.0.1:${port}" },
-			--   },
-			-- }
+			-- Auto open / close dap-view
+			dap.listeners.after.event_initialized["dap-view"] = function()
+				dapview.open()
+			end
+			dap.listeners.before.event_terminated["dap-view"] = function()
+				dapview.close()
+			end
+			dap.listeners.before.event_exited["dap-view"] = function()
+				dapview.close()
+			end
 
+			-- Elixir debugger (unchanged)
 			local elixir_ls_debugger = vim.fn.exepath("elixir-ls-debugger")
 			if elixir_ls_debugger ~= "" then
-				dap.adapters.mix_task = {
-					type = "executable",
-					command = elixir_ls_debugger,
-				}
-
+				dap.adapters.mix_task = { type = "executable", command = elixir_ls_debugger }
 				dap.configurations.elixir = {
 					{
 						type = "mix_task",
