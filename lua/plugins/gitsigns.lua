@@ -41,6 +41,11 @@ return {
 			end, { desc = "Git: blame" })
 
 			map("n", "<leader>hd", gitsigns.diffthis, { desc = "Git: diff this" })
+
+			map("n", "<leader>hr", gitsigns.reset_hunk, { desc = "Git: reset hunk" })
+			map("v", "<leader>hr", function()
+				gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+			end, { desc = "Git: reset hunk (visual)" })
 		end,
 	},
 }
