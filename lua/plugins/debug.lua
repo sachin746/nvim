@@ -7,6 +7,7 @@ return {
 			"theHamsta/nvim-dap-virtual-text",
 			"nvim-neotest/nvim-nio",
 			"mason-org/mason.nvim",
+			"igorlfs/nvim-dap-view",
 		},
 
 		keys = {
@@ -95,6 +96,26 @@ return {
 			dapview.setup()
 			require("dap-go").setup()
 
+			local function get_args()
+				return coroutine.create(function(dap_run_co)
+					vim.ui.input({ prompt = "Args (blank for none): " }, function(input)
+						coroutine.resume(dap_run_co, vim.split(input or "", " ", { trimempty = true }))
+					end)
+				end)
+			end
+
+			-- simplify: skip dap-go's config picker, just run the current package
+			dap.configurations.go = {
+				{
+					type = "go",
+					name = "Debug",
+					request = "launch",
+					program = "${fileDirname}",
+					outputMode = "remote",
+					args = get_args,
+				},
+			}
+
 			require("nvim-dap-virtual-text").setup({
 				display_callback = function(variable)
 					local name = string.lower(variable.name)
@@ -112,15 +133,10 @@ return {
 				end,
 			})
 
-			-- Auto open / close dap-view
+			-- Auto open dap-view on start; leave it open on exit so fast-exiting
+			-- programs (no breakpoint hit) don't flicker open/closed.
 			dap.listeners.after.event_initialized["dap-view"] = function()
 				dapview.open()
-			end
-			dap.listeners.before.event_terminated["dap-view"] = function()
-				dapview.close()
-			end
-			dap.listeners.before.event_exited["dap-view"] = function()
-				dapview.close()
 			end
 
 			-- Elixir debugger (unchanged)
@@ -138,24 +154,6 @@ return {
 						debugAutoInterpretAllModules = false,
 					},
 				}
-			end
-
-			-- Eval var under cursor
-			vim.keymap.set("n", "<space>dv", function()
-				require("dapui").eval(nil, { enter = true })
-			end, { desc = "Debug: eval under cursor" })
-
-			dap.listeners.before.attach.dapui_config = function()
-				ui.open()
-			end
-			dap.listeners.before.launch.dapui_config = function()
-				ui.open()
-			end
-			dap.listeners.before.event_terminated.dapui_config = function()
-				ui.close()
-			end
-			dap.listeners.before.event_exited.dapui_config = function()
-				ui.close()
 			end
 		end,
 	},

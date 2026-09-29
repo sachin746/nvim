@@ -2,8 +2,6 @@ return {
 	{
 		"ibhagwan/fzf-lua",
 		dependencies = { "nvim-tree/nvim-web-devicons" }, -- optional
-		lazy = false,
-		priority = 1000,
 
 		-- Replace all Telescope keymaps with fzf-lua equivalents
 		keys = {
