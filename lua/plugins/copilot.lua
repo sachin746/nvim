@@ -15,17 +15,4 @@ return {
 			})
 		end,
 	},
-	{
-		"Exafunction/codeium.vim",
-		lazy = false,
-		config = function()
-			vim.g.codeium_no_map_tab = true
-			vim.keymap.set("i", "<C-J>", function()
-				return vim.fn["codeium#Accept"]()
-			end, { expr = true, silent = true, desc = "Codeium: accept suggestion" })
-			vim.keymap.set("i", "<C-;>", function()
-				return vim.fn["codeium#CycleCompletions"](1)
-			end, { expr = true, silent = true, desc = "Codeium: next suggestion" })
-		end,
-	},
 }

@@ -44,5 +44,17 @@ return {
 		vim.keymap.set("n", "<leader>ep", function()
 			switch_env("prod")
 		end, { desc = "Env: switch to prod" })
+		vim.keymap.set("n", "<leader>es", function()
+			local file = service_env_file()
+			local loaded = vim.fn.filereadable(file) == 1
+			vim.notify(
+				("env=%s\nfile=%s\n%s"):format(
+					vim.g.current_env,
+					file,
+					loaded and "loaded (readable)" or "NOT FOUND, no vars loaded"
+				),
+				loaded and vim.log.levels.INFO or vim.log.levels.WARN
+			)
+		end, { desc = "Env: show status" })
 	end,
 }
