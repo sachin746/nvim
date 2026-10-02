@@ -1,5 +1,6 @@
 return {
 	"olimorris/codecompanion.nvim",
+	cmd = { "CodeCompanionChat", "CodeCompanion", "CodeCompanionActions" },
 	dependencies = {
 		-- needed to install additional parsers
 		{ "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
@@ -17,7 +18,10 @@ return {
 				},
 				cmdline = { sources = { "cmdline" } },
 				sources = {
-					default = { "lsp", "path", "buffer", "codecompanion" },
+					default = { "lsp", "path", "buffer" },
+					per_filetype = {
+						codecompanion = { "codecompanion" },
+					},
 				},
 			},
 		},

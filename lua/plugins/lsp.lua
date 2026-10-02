@@ -15,6 +15,7 @@ return {
 	{
 		"mason-org/mason-lspconfig.nvim",
 		opts = {
+			automatic_enable = false,
 			ensure_installed = {
 				"lua_ls",
 				"gopls",
@@ -33,6 +34,7 @@ return {
 
 	{
 		"neovim/nvim-lspconfig",
+		event = { "BufReadPre", "BufNewFile" },
 		dependencies = { "ibhagwan/fzf-lua", "saghen/blink.cmp" },
 		config = function()
 			local fzf = require("fzf-lua")
