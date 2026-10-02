@@ -31,13 +31,14 @@ function M.Closetxt()
 end
 
 function M.runCPP()
+	vim.cmd("wa")
 	local input = vim.fn.expand("~/Desktop/DSA/cpp/input.txt")
 	local output = vim.fn.expand("~/Desktop/DSA/cpp/output.txt")
 	local filename = vim.fn.expand("%:p")
 	local compiled = vim.fn.expand("%:p:r") .. ".out"
 
-	-- Compile the C++ file
-	local compile_cmd = "g++ -std=c++17 -O2 -Wall -Wextra -o " .. compiled .. " " .. filename .. " 2> " .. output
+	-- Compile the C++ file and add timeout
+	local compile_cmd = "g++ -std=c++20 -O2 -Wall -Wextra -o " .. compiled .. " " .. filename .. " 2> " .. output
 	local compile_result = os.execute(compile_cmd)
 
 	if compile_result ~= 0 then
