@@ -113,6 +113,60 @@ local function dap_repl_bufnr()
 	end
 end
 
+-- Keys consumed before building the trailing key=value section.
+local json_skip = {
+	level = true, Level = true,
+	msg = true, message = true, Message = true,
+	time = true, ts = true, timestamp = true,
+	caller = true, source = true,
+	error = true, err = true,
+}
+
+-- Parse a JSON-structured log line (zerolog / slog / logrus JSON) into a
+-- compact readable form and return (formatted_text, spans) in the same shape
+-- as strip_ansi — so the same highlight loop handles both paths.
+local function format_json_log(text)
+	local ok, obj = pcall(vim.json.decode, text)
+	if not ok or type(obj) ~= "table" then
+		return nil
+	end
+
+	local level = ((obj.level or obj.Level or "")):upper()
+	local msg   = tostring(obj.msg or obj.message or obj.Message or "")
+	local ts    = tostring(obj.time or obj.ts or obj.timestamp or "")
+	local err   = obj.error or obj.err
+
+	local parts, spans, col = {}, {}, 0
+	local function push(s, hl)
+		if s == "" then return end
+		if hl then spans[#spans + 1] = { hl, col, col + #s } end
+		parts[#parts + 1] = s
+		col = col + #s
+	end
+
+	if level ~= "" then
+		push(level .. " ", detect_level_hl(level) or "DapAnsiWhite")
+	end
+	if ts ~= "" then
+		push((ts:match("T(%d%d:%d%d:%d%d)") or ts:sub(1, 8)) .. " ", "DapAnsiBrightBlack")
+	end
+	if msg ~= "" then
+		push(msg, "DapAnsiWhite")
+	end
+	if err ~= nil then
+		push("  error=", "DapAnsiCyan")
+		push(tostring(err), "DapAnsiRed")
+	end
+	for k, v in pairs(obj) do
+		if not json_skip[k] and type(v) ~= "table" then
+			push("  " .. k .. "=", "DapAnsiCyan")
+			push(tostring(v), nil)
+		end
+	end
+
+	return table.concat(parts), spans
+end
+
 return {
 	{
 		"mfussenegger/nvim-dap",
@@ -223,6 +277,12 @@ return {
 				local repl = require("dap").repl
 				for _, raw in ipairs(vim.split(body.output, "\n", { plain = true, trimempty = true })) do
 					local text, spans = strip_ansi(raw)
+					if #spans == 0 and text:match("^%s*{") then
+						local json_text, json_spans = format_json_log(text)
+						if json_text then
+							text, spans = json_text, json_spans
+						end
+					end
 					local lnum = repl.append(text, "$", { newline = true })
 					local buf = dap_repl_bufnr()
 					if buf then
