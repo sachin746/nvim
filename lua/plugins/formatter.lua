@@ -10,7 +10,7 @@ return {
 			-- Conform will run the first available formatter
 			javascript = { "prettierd", "prettier", stop_after_first = true },
 			-- go format with gofumpt
-			go = { "gofumpt", "goimports" },
+			go = { "goimports", "gofumpt" },
 			--json format with prettier
 			json = { "jq", "prettierd", "prettier", stop_after_first = true },
 			-- http format with kulala

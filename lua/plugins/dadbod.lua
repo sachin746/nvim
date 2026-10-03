@@ -33,16 +33,6 @@ return {
 		vim.api.nvim_create_autocmd("FileType", {
 			pattern = { "sql", "mysql", "plsql" },
 			callback = function(args)
-				local ok, cmp = pcall(require, "cmp")
-				if ok then
-					cmp.setup.buffer({
-						sources = cmp.config.sources({
-							{ name = "vim-dadbod-completion" },
-							{ name = "buffer" },
-						}),
-					})
-				end
-
 				-- dadbod caches :params in b:dbui_bind_params; clear so it asks every run
 				vim.api.nvim_create_autocmd("BufWritePre", {
 					buffer = args.buf,

@@ -21,6 +21,15 @@ return {
 					default = { "lsp", "path", "buffer" },
 					per_filetype = {
 						codecompanion = { "codecompanion" },
+						sql = { "dadbod", "lsp", "path", "buffer" },
+						mysql = { "dadbod", "lsp", "path", "buffer" },
+						plsql = { "dadbod", "lsp", "path", "buffer" },
+					},
+					providers = {
+						dadbod = {
+							name = "Dadbod",
+							module = "vim_dadbod_completion.blink",
+						},
 					},
 				},
 			},

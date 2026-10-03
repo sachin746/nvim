@@ -50,7 +50,14 @@ return {
 				map("gt", fzf.lsp_typedefs, "LSP: type definition")
 
 				map("gD", vim.lsp.buf.declaration, "LSP: declaration")
-				map("K", vim.lsp.buf.hover, "LSP: hover")
+				map("K", function()
+					local dap = package.loaded["dap"]
+					if dap and dap.session() then
+						require("dap.ui.widgets").hover()
+					else
+						vim.lsp.buf.hover()
+					end
+				end, "LSP/DAP: hover")
 
 				map("<leader>ca", vim.lsp.buf.code_action, "LSP: code action")
 				map("<leader>rn", vim.lsp.buf.rename, "LSP: rename")

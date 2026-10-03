@@ -223,9 +223,10 @@ return {
 				local repl = require("dap").repl
 				for _, raw in ipairs(vim.split(body.output, "\n", { plain = true, trimempty = true })) do
 					local text, spans = strip_ansi(raw)
-					local lnum = repl.append(text, "$", { newline = true })
+					repl.append(text, "$", { newline = true })
 					local buf = dap_repl_bufnr()
 					if buf then
+						local lnum = math.max(0, vim.api.nvim_buf_line_count(buf) - 1)
 						if #spans > 0 then
 							for _, span in ipairs(spans) do
 								vim.api.nvim_buf_add_highlight(buf, -1, span[1], lnum, span[2], span[3])
@@ -249,12 +250,27 @@ return {
 			end
 
 			-- simplify: skip dap-go's config picker, just run the current package
+			local function find_main_dir()
+				local cur_dir = vim.fn.expand("%:p:h")
+				-- current dir has main.go — use it directly
+				if vim.fn.filereadable(cur_dir .. "/main.go") == 1 then
+					return cur_dir
+				end
+				-- walk up the tree looking for main.go
+				local found = vim.fn.findfile("main.go", cur_dir .. ";")
+				if found ~= "" then
+					return vim.fn.fnamemodify(found, ":p:h")
+				end
+				-- fallback: current file's directory
+				return cur_dir
+			end
+
 			dap.configurations.go = {
 				{
 					type = "go",
 					name = "Debug",
 					request = "launch",
-					program = "${fileDirname}",
+					program = find_main_dir,
 					outputMode = "remote",
 					args = get_args,
 				},
