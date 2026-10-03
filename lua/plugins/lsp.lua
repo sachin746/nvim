@@ -63,7 +63,7 @@ return {
 				map("<leader>rn", vim.lsp.buf.rename, "LSP: rename")
 
 				map("<leader>fo", function()
-					vim.lsp.buf.format({ async = true })
+					require("conform").format({ async = true })
 				end, "Format current buffer")
 
 				map("<leader>xx", fzf.diagnostics_workspace, "Diagnostics: workspace")
@@ -99,6 +99,12 @@ return {
 				gopls = {
 					filetypes = { "go", "gomod", "gowork", "gotmpl" },
 					cmd = { "gopls" },
+					settings = {
+						gopls = {
+							analyses = { unusedparams = true },
+							staticcheck = true,
+						},
+					},
 				},
 				pyright = {
 					filetypes = { "python" },

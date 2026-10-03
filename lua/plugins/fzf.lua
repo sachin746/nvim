@@ -9,6 +9,7 @@ return {
 			{ "<leader>fg", "<cmd>FzfLua live_grep<cr>", desc = "Live grep" },
 			{ "<leader>fb", "<cmd>FzfLua buffers<cr>", desc = "Find buffers" },
 			{ "<leader>fh", "<cmd>FzfLua help_tags<cr>", desc = "Help tags" },
+			{ "<leader>fr", "<cmd>FzfLua oldfiles<cr>", desc = "Recent files" },
 		},
 
 		config = function()

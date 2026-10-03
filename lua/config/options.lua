@@ -45,7 +45,7 @@ opt.splitright = true -- new vertical splits open to the right
 
 -- ---------- Performance ----------
 opt.updatetime = 300 -- faster diagnostics / completion response
-opt.timeoutlen = 500 -- faster key sequence timeout
+opt.timeoutlen = 300 -- faster key sequence timeout
 
 -- ---------- Appearance ----------
 opt.colorcolumn = "100" -- show vertical line at column 100
@@ -66,6 +66,7 @@ opt.backspace = { "indent", "eol", "start" } -- backspace over anything
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldenable = false
+vim.opt.foldlevelstart = 99
 
 vim.fn.sign_define("DapBreakpoint", { text = "🟥", texthl = "", linehl = "", numhl = "" })
 vim.fn.sign_define("DapBreakpointCondition", { text = "🟨", texthl = "", linehl = "", numhl = "" })
