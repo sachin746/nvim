@@ -223,10 +223,9 @@ return {
 				local repl = require("dap").repl
 				for _, raw in ipairs(vim.split(body.output, "\n", { plain = true, trimempty = true })) do
 					local text, spans = strip_ansi(raw)
-					repl.append(text, "$", { newline = true })
+					local lnum = repl.append(text, "$", { newline = true })
 					local buf = dap_repl_bufnr()
 					if buf then
-						local lnum = math.max(0, vim.api.nvim_buf_line_count(buf) - 1)
 						if #spans > 0 then
 							for _, span in ipairs(spans) do
 								vim.api.nvim_buf_add_highlight(buf, -1, span[1], lnum, span[2], span[3])
