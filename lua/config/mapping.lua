@@ -24,6 +24,12 @@ vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm direction=horizontal<CR>", { 
 
 -- Tab navigation
 
+-- quickfix cycling
+vim.keymap.set("n", "]q", "<cmd>cnext<CR>",     { desc = "Next quickfix item" })
+vim.keymap.set("n", "[q", "<cmd>cprev<CR>",     { desc = "Prev quickfix item" })
+vim.keymap.set("n", "]Q", "<cmd>clast<CR>",     { desc = "Last quickfix item" })
+vim.keymap.set("n", "[Q", "<cmd>cfirst<CR>",    { desc = "First quickfix item" })
+
 -- buffer
 vim.keymap.set("n", "<leader>bd", ":bdelete<CR>", { desc = "Close current buffer" })
 vim.keymap.set("n", "<S-h>", "<cmd>bp<CR>", { desc = "Previous buffer" })
