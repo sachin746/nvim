@@ -379,6 +379,61 @@ return {
 				end
 			end
 
+			-- Breakpoint persistence ------------------------------------------------
+			local bp_store = vim.fn.stdpath("data") .. "/dap-breakpoints.json"
+
+			local function read_bp_store()
+				local f = io.open(bp_store, "r")
+				if not f then return {} end
+				local content = f:read("*a")
+				f:close()
+				if content == "" then return {} end
+				local ok, data = pcall(vim.fn.json_decode, content)
+				return (ok and type(data) == "table") and data or {}
+			end
+
+			local function save_breakpoints()
+				local store = read_bp_store()
+				local cwd = vim.fn.getcwd()
+				-- clear stale entries for the current project
+				for path in pairs(store) do
+					if vim.startswith(path, cwd) then store[path] = nil end
+				end
+				for bufnr, bps in pairs(require("dap.breakpoints").get()) do
+					local path = vim.api.nvim_buf_get_name(bufnr)
+					if path ~= "" and #bps > 0 then store[path] = bps end
+				end
+				local f = io.open(bp_store, "w")
+				if f then f:write(vim.fn.json_encode(store)); f:close() end
+			end
+
+			local function restore_for_buf(bufnr, store)
+				local path = vim.api.nvim_buf_get_name(bufnr)
+				local bps = store[path]
+				if not bps then return end
+				for _, bp in ipairs(bps) do
+					require("dap.breakpoints").set({
+						condition = bp.condition,
+						hit_condition = bp.hitCondition,
+						log_message = bp.logMessage,
+					}, bufnr, bp.line)
+				end
+			end
+
+			local function load_breakpoints()
+				local store = read_bp_store()
+				for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+					restore_for_buf(bufnr, store)
+				end
+				vim.api.nvim_create_autocmd("BufReadPost", {
+					callback = function(ev) restore_for_buf(ev.buf, store) end,
+				})
+			end
+
+			vim.api.nvim_create_autocmd("VimLeave", { callback = save_breakpoints })
+			load_breakpoints()
+			-- -----------------------------------------------------------------------
+
 			-- Elixir debugger (unchanged)
 			local elixir_ls_debugger = vim.fn.exepath("elixir-ls-debugger")
 			if elixir_ls_debugger ~= "" then
