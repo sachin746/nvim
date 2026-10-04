@@ -358,6 +358,27 @@ return {
 				dapview.open()
 			end
 
+			-- Run go build before launching so compile errors surface in the REPL
+			-- as readable diagnostics instead of the generic "Failed to launch".
+			dap.listeners.before.launch["go-build-check"] = function(_, body)
+				if body.type ~= "go" then return end
+				local program = type(body.program) == "function" and body.program() or body.program
+				if not program then return end
+				local result = vim.fn.system({ "go", "build", program })
+				if vim.v.shell_error ~= 0 then
+					local repl = require("dap").repl
+					repl.append("── go build failed ──────────────────", "$", { newline = true })
+					for _, line in ipairs(vim.split(result, "\n", { trimempty = true })) do
+						local lnum = repl.append(line, "$", { newline = true })
+						local buf = dap_repl_bufnr()
+						if buf then
+							vim.api.nvim_buf_add_highlight(buf, -1, "DapAnsiRed", lnum, 0, -1)
+						end
+					end
+					repl.append("─────────────────────────────────────", "$", { newline = true })
+				end
+			end
+
 			-- Elixir debugger (unchanged)
 			local elixir_ls_debugger = vim.fn.exepath("elixir-ls-debugger")
 			if elixir_ls_debugger ~= "" then
