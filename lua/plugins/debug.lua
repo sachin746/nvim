@@ -246,8 +246,9 @@ return {
 				"<leader>dv",
 				function()
 					require("dap-view").open()
-					-- Focus the dap-view window after opening (defer to ensure window is ready)
-					vim.schedule(function()
+					-- Focus the dap-view window after opening
+					-- Use a timer to ensure the window is created and ready
+					vim.fn.timer_start(10, function()
 						local state = require("dap-view.state")
 						if state.winnr and vim.api.nvim_win_is_valid(state.winnr) then
 							vim.api.nvim_set_current_win(state.winnr)
