@@ -247,9 +247,9 @@ return {
 				function()
 					require("dap-view").open()
 					-- Focus the dap-view window after opening
-					local dapview = require("dap-view")
-					if dapview.winnr and vim.api.nvim_win_is_valid(dapview.winnr()) then
-						vim.api.nvim_set_current_win(dapview.winnr())
+					local state = require("dap-view.state")
+					if state.winnr and vim.api.nvim_win_is_valid(state.winnr) then
+						vim.api.nvim_set_current_win(state.winnr)
 					end
 				end,
 				desc = "Open dap-view and focus it",
