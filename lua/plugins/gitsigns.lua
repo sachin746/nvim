@@ -36,9 +36,7 @@ return {
 				end
 			end, { desc = "Git: previous hunk" })
 
-			map("n", "<leader>hb", function()
-				gitsigns.blame({ full = true })
-			end, { desc = "Git: blame" })
+			map("n", "<leader>hb", gitsigns.toggle_current_line_blame, { desc = "Git: toggle blame" })
 
 			map("n", "<leader>hd", gitsigns.diffthis, { desc = "Git: diff this" })
 
