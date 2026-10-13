@@ -246,9 +246,12 @@ return {
 				"<leader>dv",
 				function()
 					require("dap-view").open()
-					-- Focus the dap-view window by jumping to it
-					vim.fn.timer_start(10, function()
-						require("dap-view").jump_to_view("scopes")
+					-- Focus the dap-view window after it's created
+					vim.fn.timer_start(50, function()
+						local state = require("dap-view.state")
+						if state.winnr and vim.api.nvim_win_is_valid(state.winnr) then
+							vim.api.nvim_set_current_win(state.winnr)
+						end
 					end)
 				end,
 				desc = "Open dap-view and focus it",
